@@ -1,68 +1,58 @@
 import React from "react";
 import style from './Style';
-import TextField from './TextField';
 
 class SimpleForm extends React.Component {
 
-    state = {
-      firstName: "",
-      firstNameError: "",
-      lastName: "",
-      lastNameError: ""
-    };
-  
-    onFirstNameChange = event =>
-      this.setState({
-        firstName: event.target.value
-      });
-  
-    onFirstNameBlur = () => {
-      const { firstName } = this.state;
-      const firstNameError = this.validateName(firstName);
-      return this.setState({ firstNameError });
-    };
-  
-    onLastNameBlur = () => {
-      const { lastName } = this.state;
-  
-      const lastNameError = this.validateName(lastName);
-  
-      return this.setState({ lastNameError });
-    };
-  
-    onLastNameChange = event =>
-      this.setState({
-        lastName: event.target.value
-      });
-  
-    validateName = name => {
-      const regex = /[A-Za-z]{3,}/;
-  
-      return !regex.test(name)
-        ? "The name must contain at least three letters. Numbers and special characters are not allowed."
-        : "";
-    };
-  
-    render() {
-      const { firstNameError, firstName, lastName, lastNameError } = this.state;
-      return (
-        <div style={style.form}>
-          <TextField name="firstName"
-            label="First name:"
-            onChange={this.onFirstNameChange}
-            onBlur={this.onFirstNameBlur}
-            error={firstNameError} />
-  
-          <TextField name="lastName"
-            label="Last name:"
-            onChange={this.onLastNameChange}
-            onBlur={this.onLastNameBlur}
-            error={lastNameError} />
-        </div>
-  
-      );
+  state = {
+    data: [],
+    id: 0,
+    message: null,
+    intervalIsSet: false,
+  };
+
+  componentDidMount() {
+    this.getDataFromDb();
+    if (!this.state.intervalIsSet) {
+      let interval = setInterval(this.getDataFromDb, 1000);
+      this.setState({ intervalIsSet: interval });
     }
+  };
+
+  componentWillUnmount() {
+    if (this.state.intervalIsSet) {
+      clearInterval(this.state.intervalIsSet);
+      this.setState({ intervalIsSet: null });
+    }
+  };
+
+  getDataFromDb = () => {
+    fetch("https://pulseapidev.herokuapp.com/api/getData")
+      .then(data => data.json())
+      .then(res => this.setState({ data: res.data }));
+  };
+
+  render() {
+    const { data } = this.state;
+    return (
+      <div style={style.form}>
+
+        <ul>
+          {data.length <= 0
+            ? "NO DB ENTRIES YET"
+            : data.map(dat => (
+              <li style={{ padding: "10px" }} key={data.message}>
+                <span style={{ color: "gray" }}> id: </span> {dat.id} <br />
+                <span style={{ color: "gray" }}> data: </span>
+                {dat.message}
+              </li>
+            ))}
+        </ul>
+
+      </div>
+
+    );
   }
+}
 
 
 export default SimpleForm;
