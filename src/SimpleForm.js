@@ -1,5 +1,6 @@
 import React from "react";
 import style from './Style';
+var config = require('./config');
 
 class SimpleForm extends React.Component {
 
@@ -26,7 +27,7 @@ class SimpleForm extends React.Component {
   };
 
   getDataFromDb = () => {
-    fetch("https://pulseapidev.herokuapp.com/api/getData")
+    fetch(config.HOST+"/api/getData")
       .then(data => data.json())
       .then(res => this.setState({ data: res.data }));
   };
