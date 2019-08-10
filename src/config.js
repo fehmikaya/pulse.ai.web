@@ -1,7 +1,7 @@
-var ENV = process.env.PROJ_ENV || 'development';
+var env = process.env.NODE_ENV || 'development';
 var HOST = "https://pulseapidev.herokuapp.com";
 
-if (ENV === 'development') {
+if (env === 'development') {
     HOST = "";
 }
 
