@@ -27,7 +27,6 @@ class SimpleForm extends React.Component {
   };
 
   getDataFromDb = () => {
-    console.log(process.env.NODE_ENV+","+config.HOST);
     fetch(config.HOST+"/api/getData")
       .then(data => data.json())
       .then(res => this.setState({ data: res.data }));
